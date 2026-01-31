@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Celebration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{
+  height:100vh;
+  background:black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  transition:background 1.5s ease;
+}
+
+/* BUTTONS */
+button{
+  padding:14px 28px;
+  font-size:1rem;
+  font-weight:bold;
+  border:none;
+  border-radius:40px;
+  background:linear-gradient(135deg,#ffd166,#ffb703);
+  color:#5a3b00;
+  cursor:pointer;
+  box-shadow:0 0 15px rgba(255,209,102,0.8);
+  animation:pulse 1.5s infinite;
+  position:absolute;
+  z-index:100;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+/* BACKGROUND LIGHTS */
+body.lights-on{
+  background:linear-gradient(135deg,#fff1cc,#ffd6a5,#ffcad4,#e0ffe1);
+  background-size:400% 400%;
+  animation:bgMove 15s infinite;
+}
+@keyframes bgMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* LANTERNS */
+.lantern{position:absolute;top:40px;width:26px;height:40px;background:#ffd54f;border-radius:8px;box-shadow:0 0 15px rgba(255,213,79,0.9);animation:swing 3s ease-in-out infinite;display:none;}
+.lantern::before{content:'';position:absolute;width:2px;height:48px;background:#b08b57;top:-48px;left:50%;transform:translateX(-50%);}
+.lantern::after{content:'';position:absolute;width:6px;height:6px;background:#8b5a2b;border-radius:50%;top:-8px;left:50%;transform:translateX(-50%);box-shadow:0 0 4px rgba(0,0,0,0.4);}
+.lantern{overflow:visible;}
+@keyframes swing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+
+/* BUNTING */
+.bunting{position:absolute;top:150px;width:100%;display:none;justify-content:center;gap:6px;z-index:90;}
+.bunting.corner{position:absolute;top:12px;display:none;gap:6px;width:auto;z-index:95;}
+.bunting.corner.left{left:12px;justify-content:flex-start}
+.bunting.corner.right{right:12px;left:auto;justify-content:flex-end}
+.bunting.corner .flag{padding:6px;font-size:0.85rem;border-radius:6px}
+.flag{background:#ff6f61;color:white;padding:8px;font-weight:bold;border-radius:0 0 6px 6px;}
+.flag:nth-child(even){background:#ffd166;}
+
+/* FAIRY LIGHTS */
+.fairy{position:absolute;top:70px;width:100%;display:none;justify-content:space-evenly;}
+.bulb{width:10px;height:10px;background:yellow;border-radius:50%;box-shadow:0 0 12px yellow;animation:blink 1.5s infinite alternate;}
+@keyframes blink{from{opacity:0.3}to{opacity:1}}
+
+/* TABLE */
+.table{position:absolute;bottom:0;width:300px;height:100px;background:linear-gradient(#c68642,#8d5a2b);border-radius:14px;box-shadow:0 -6px 0 #704214;display:none;left:50%;transform:translateX(-50%);z-index:20}
+
+/* CAKE */
+.cake{position:absolute;bottom:50px;width:240px;height:150px;display:none;justify-content:center;align-items:flex-end;flex-direction:column;left:50%;transform:translateX(-50%);z-index:30}
+
+/* CAKE HALVES */
+.cake-left,.cake-right{position:absolute;bottom:0;width:120px;height:150px;display:flex;flex-direction:column;align-items:center;}
+.cake-left{left:0;}
+.cake-right{right:0;}
+.cake-layer{width:100%;height:50px;background:linear-gradient(#5a2d0c,#3d1f0b);border-radius:16px;box-shadow:inset 0 -6px rgba(0,0,0,0.3);margin-top:-10px;}
+.drip{position:absolute;top:20px;width:100%;height:40px;background:#3d1f0b;border-radius:0 0 18px 18px;}
+.topping{position:absolute;top:-18px;width:100%;display:flex;justify-content:space-evenly;}
+.cherry{width:14px;height:14px;background:red;border-radius:50%;}
+.choco{width:10px;height:10px;background:#2b1206;border-radius:50%;}
+
+/* CANDLES */
+.candles{position:absolute;top:-48px;width:100%;display:flex;justify-content:space-evenly;}
+.candle{width:10px;height:35px;background:white;border-radius:4px;position:relative;}
+.flame{position:absolute;top:-12px;left:-4px;width:18px;height:18px;background:orange;border-radius:50%;box-shadow:0 0 15px orange;animation:flicker 1s infinite;}
+@keyframes flicker{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* CAKE NAME */
+.cake-name{position:absolute;bottom:95px;font-size:18px;color:#ffd166;font-weight:bold;letter-spacing:3px;z-index:40;left:50%;transform:translateX(-50%);text-align:center;width:100%;}
+
+/* CUT ANIMATION */
+@keyframes sliceLeft{to{transform:translateX(-120px);}}
+@keyframes sliceRight{to{transform:translateX(120px);}}
+.slice-left{animation:sliceLeft 2s forwards;}
+.slice-right{animation:sliceRight 2s forwards;}
+
+/* MESSAGE */
+.message{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:22px;border-radius:16px;font-weight:bold;text-align:center;display:none;box-shadow:0 0 25px rgba(0,0,0,0.2);z-index:200;}
+
+/* REALISTIC BALLOONS */
+.balloon{
+  position:absolute;
+  width:40px;
+  height:60px;
+  background:radial-gradient(circle at 30% 30%, #ff4b5c, #c70039);
+  border-radius:50% 50% 50% 50%;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:30; /* send balloons behind prominent UI (like bunting text) */
+}
+.balloon::after{
+  content:'';
+  position:absolute;
+  width:2px;
+  height:40px;
+  background:#444;
+  bottom:-40px;
+}
+
+/* Background-style balloons (decor only) */
+.balloon.bg{
+  z-index:10; /* further in background */
+  opacity:0.6;
+  filter:blur(0.4px);
+}
+
+@keyframes moveUpBg{0%{transform:translateY(0)}100%{transform:translateY(-120vh)}}
+.balloon.yellow{background:radial-gradient(circle at 30% 30%, #fff566, #ffd700);}
+.balloon.blue{background:radial-gradient(circle at 30% 30%, #00bfff, #0077be);}
+.balloon.pink{background:radial-gradient(circle at 30% 30%, #ff69b4, #ff1493);}
+.balloon.orange{background:radial-gradient(circle at 30% 30%, #ff8c00, #ff4500);}
+.balloon.purple{background:radial-gradient(circle at 30% 30%, #b19cd9, #7b68ee);}
+@keyframes moveUp{
+  /* start at current position, end near the top under bunting */
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-calc(100vh - 120px));}
+}
+
+/* FIRECRACKERS */
+.firecracker{position:absolute;width:6px;height:20px;background:red;animation:explode 1s linear infinite;}
+@keyframes explode{
+  0%{transform:translateY(0) scaleY(1);opacity:1;}
+  50%{transform:translateY(-30px) scaleY(0.5);opacity:0.7;}
+  100%{transform:translateY(0) scaleY(1);opacity:1;}
+}
+
+.gift{position:absolute;width:40px;height:40px;background:#ff6f61;display:none;border-radius:6px;box-shadow:0 0 8px rgba(0,0,0,0.3);z-index:80;}
+.gift::after{content:'';position:absolute;top:0;left:18px;width:4px;height:40px;background:#ffd166;}
+.gift::before{content:'';position:absolute;left:0;top:18px;width:40px;height:4px;background:#ffd166;}
+/* Big celebration balloon (appears after cake cut) */
+.big-balloon{
+  position:fixed;
+  left:50%;
+  bottom:220px;
+  transform:translateX(-50%) scale(0.8);
+  width:260px;
+  height:330px;
+  border-radius:50% 50% 45% 45%;
+  background:radial-gradient(circle at 35% 30%, #ff7fb3, #ff3d81);
+  box-shadow:0 12px 30px rgba(0,0,0,0.35), inset 0 -8px rgba(0,0,0,0.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:18px;
+  text-align:center;
+  padding:24px;
+  z-index:140;
+  animation:bigFloatIn 2s ease-out forwards;
+}
+.big-balloon .knot{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);width:16px;height:18px;background:#8b5a2b;border-radius:4px}
+@keyframes bigFloatIn{0%{transform:translateX(-50%) translateY(40px) scale(0.6);opacity:0}60%{opacity:1}100%{transform:translateX(-50%) translateY(-180px) scale(1)}}
+.big-balloon.pop{animation:popAnim .6s forwards}
+@keyframes popAnim{0%{transform:translateX(-50%) translateY(-180px) scale(1);opacity:1}100%{transform:translateX(-50%) translateY(-180px) scale(1.9);opacity:0}}
+
+/* Message that appears after pop */
+.big-message{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.98);color:#1b1b1b;padding:22px;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,0.25);z-index:150;max-width:780px;width:90%;font-size:16px;line-height:1.4;opacity:0;animation:fadeIn .6s forwards}
+@keyframes fadeIn{to{opacity:1}}
+
+.big-message .close-btn{
+  display:inline-block;
+  margin-top:14px;
+  padding:10px 16px;
+  background:#ff6f61;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
+.big-message .close-btn:active{transform:translateY(1px)}
+</style>
+</head>
+<body>
+
+<!-- Buttons -->
+<button id="lightsBtn">💡 TURN LIGHTS ON</button>
+<button id="lanternBtn" style="display:none;">🏮 ADD LANTERNS</button>
+<button id="decorBtn" style="display:none;">🎉 ADD DECORATION</button>
+<button id="cakeBtn" style="display:none;">🎂 BRING CAKE</button>
+<button id="blowBtn" style="display:none;">💨 BLOW CANDLES</button>
+<button id="cutBtn" style="display:none;">🎂 LET'S CUT THE CAKEE NOW</button>
+
+<!-- LANTERNS -->
+<div class="lantern" style="left:10%"></div>
+<div class="lantern" style="left:30%"></div>
+<div class="lantern" style="left:50%"></div>
+<div class="lantern" style="left:70%"></div>
+<div class="lantern" style="left:90%"></div>
+
+<!-- BUNTING -->
+<div class="bunting">
+  <div class="flag">H</div><div class="flag">A</div><div class="flag">P</div>
+  <div class="flag">P</div><div class="flag">Y</div>
+  <div class="flag">🎂</div>
+  <div class="flag">B</div><div class="flag">I</div><div class="flag">R</div>
+  <div class="flag">T</div><div class="flag">H</div><div class="flag">D</div>
+  <div class="flag">A</div><div class="flag">Y</div>
+</div>
+
+<!-- Corner buntings -->
+<div class="bunting corner left" style="display:none;">
+  <div class="flag">🎉</div><div class="flag">✨</div><div class="flag">❤</div>
+</div>
+<div class="bunting corner right" style="display:none;">
+  <div class="flag">🎉</div><div class="flag">✨</div><div class="flag">❤</div>
+</div>
+
+<!-- FAIRY LIGHTS -->
+<div class="fairy">
+  <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+  <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+  <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+</div>
+
+<!-- TABLE -->
+<div class="table" id="table"></div>
+
+<!-- CAKE -->
+<div class="cake" id="cake">
+  <div class="cake-left">
+    <div class="candles">
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+    </div>
+    <div class="topping">
+      <div class="cherry"></div><div class="choco"></div>
+    </div>
+    <div class="layer cake-layer top"></div>
+    <div class="layer cake-layer middle"></div>
+    <div class="layer cake-layer"></div>
+    <div class="drip"></div>
+  </div>
+  <div class="cake-right">
+    <div class="candles">
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+    </div>
+    <div class="topping">
+      <div class="cherry"></div><div class="choco"></div>
+    </div>
+    <div class="layer cake-layer top"></div>
+    <div class="layer cake-layer middle"></div>
+    <div class="layer cake-layer"></div>
+    <div class="drip"></div>
+  </div>
+  <div class="cake-name">BHINDI</div>
+</div>
+
+<div class="message" id="msg"></div>
+
+<!-- Audio -->
+<audio id="happyAudio">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const lightsBtn = document.getElementById("lightsBtn");
+const lanternBtn = document.getElementById("lanternBtn");
+const decorBtn = document.getElementById("decorBtn");
+const cakeBtn = document.getElementById("cakeBtn");
+const blowBtn = document.getElementById("blowBtn");
+const cutBtn = document.getElementById("cutBtn");
+const msg = document.getElementById("msg");
+const cake = document.getElementById("cake");
+const happyAudio = document.getElementById("happyAudio");
+// Controller for the new happy-birthday melody (WebAudio)
+let melodyController = null;
+
+function startHappyMelody(){
+  try{
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioCtx();
+    const master = ctx.createGain(); master.gain.value = 0.12; master.connect(ctx.destination);
+    const osc = ctx.createOscillator(); osc.type = 'sine'; osc.connect(master);
+    osc.start();
+
+    // 'Happy Birthday' melody (frequencies in Hz, durations in ms)
+    const notes = [
+      [392,300],[392,300],[440,600],[392,600],[523.25,600],[494,1200],
+      [392,300],[392,300],[440,600],[392,600],[587.33,600],[523.25,1200],
+      [392,300],[392,300],[784,600],[659.25,600],[523.25,600],[494,600],[440,1200],
+      [698.46,300],[698.46,300],[659.25,600],[523.25,600],[587.33,600],[523.25,1200]
+    ];
+
+    const timers = [];
+    function playSequence(){
+      let t = 0;
+      for(const n of notes){
+        const [f,d] = n;
+        const id = setTimeout(()=>{
+          try{ osc.frequency.setValueAtTime(f, ctx.currentTime); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(0.12, ctx.currentTime, 0.02);
+            setTimeout(()=>{ master.gain.setTargetAtTime(0.001, ctx.currentTime, 0.02); }, Math.max(0,d-60));
+          }catch(e){}
+        }, t);
+        timers.push(id);
+        t += d;
+      }
+      const loopId = setTimeout(()=>{ playSequence(); }, t + 300);
+      timers.push(loopId);
+    }
+    const startId = setTimeout(playSequence, 300);
+    timers.push(startId);
+
+    return {
+      stop: ()=>{
+        try{ timers.forEach(i=>clearTimeout(i)); osc.stop(); osc.disconnect(); master.disconnect(); ctx.close && ctx.close(); }catch(e){}
+      }
+    };
+  }catch(e){ console.warn('Audio unavailable', e); return {stop:()=>{}}; }
+}
+
+lightsBtn.onclick=()=>{
+  document.body.classList.add("lights-on");
+  lightsBtn.style.display="none";
+  lanternBtn.style.display="block";
+};
+
+lanternBtn.onclick=()=>{
+  document.querySelectorAll(".lantern").forEach(l=>l.style.display="block");
+  lanternBtn.style.display="none";
+  decorBtn.style.display="block";
+};
+
+decorBtn.onclick=()=>{
+  document.querySelector(".bunting").style.display="flex";
+  document.querySelectorAll('.bunting.corner').forEach(b=>b.style.display='flex');
+  document.querySelector(".fairy").style.display="flex";
+
+  const colors=["red","yellow","blue","pink","orange","purple"];
+
+  // Stationary balloons: 3 on the left and 3 on the right, placed above gift boxes
+  const stationaryPerSide = 3;
+  // ensure enough horizontal gap (in percent) between balloons
+  const minBalloonGap = 7; // percent
+  const existingBalloonLefts = [];
+  function pickLeft(min, max){
+    for(let attempt=0; attempt<60; attempt++){
+      const val = min + Math.random()*(max - min);
+      let ok = true;
+      for(const ex of existingBalloonLefts){ if(Math.abs(val - ex) < minBalloonGap){ ok = false; break; } }
+      if(ok){ existingBalloonLefts.push(val); return val; }
+    }
+    // fallback if can't find non-overlapping val
+    const fallback = min + Math.random()*(max - min);
+    existingBalloonLefts.push(fallback);
+    return fallback;
+  }
+  // Left side balloons (approx 5% - 30%)
+  for(let i=0;i<stationaryPerSide;i++){
+    const b=document.createElement("div");
+    b.className="balloon "+colors[Math.floor(Math.random()*colors.length)];
+    const leftVal = pickLeft(5,30);
+    b.style.left = leftVal + "%";
+    // place above gifts (~360px - 520px)
+    b.style.bottom=(360+Math.random()*160)+"px";
+    document.body.appendChild(b);
+  }
+  // Right side balloons (approx 70% - 95%)
+  for(let i=0;i<stationaryPerSide;i++){
+    const b=document.createElement("div");
+    b.className="balloon "+colors[Math.floor(Math.random()*colors.length)];
+    const leftVal = pickLeft(70,95);
+    b.style.left = leftVal + "%";
+    b.style.bottom=(360+Math.random()*160)+"px";
+    document.body.appendChild(b);
+  }
+
+  // Moving balloons: rise slowly and stop near the bunting (so they 'touch' it)
+  for(let i=0;i<6;i++){
+    const b=document.createElement("div");
+    b.className="balloon "+colors[i%colors.length];
+    const leftVal = pickLeft(5,95);
+    b.style.left = leftVal + "%";
+    b.style.bottom="-100px";
+    b.style.animation="moveUp "+(8+Math.random()*4)+"s linear infinite";
+    document.body.appendChild(b);
+  }
+
+  // Background moving balloons (purely decorative, stay behind text)
+  for(let i=0;i<8;i++){
+    const b=document.createElement("div");
+    b.className = "balloon bg "+colors[i%colors.length];
+    // spread across the width but keep gaps using pickLeft
+    const leftB = pickLeft(5,95);
+    b.style.left = leftB + "%";
+    // start well below viewport so they float up in the background
+    b.style.bottom = (-200 - Math.random()*600) + "px";
+    b.style.transform = 'scale(' + (0.7 + Math.random()*0.7) + ')';
+    b.style.opacity = (0.45 + Math.random()*0.35).toString();
+    b.style.animation = "moveUpBg "+(30+Math.random()*40)+"s linear infinite";
+    document.body.appendChild(b);
+  }
+
+  // Firecrackers
+  for(let i=0;i<8;i++){
+    const f=document.createElement("div");
+    f.className="firecracker";
+    f.style.left=(i*10+5)+"%";
+    f.style.bottom="0px";
+    document.body.appendChild(f);
+  }
+
+  // Gift boxes: placed randomly above the cake level (and some near balloons)
+  // Cake sits roughly at bottom:50px with height:150px -> top area ~200px upwards
+  for(let i=0;i<6;i++){
+    const g=document.createElement("div");
+    g.className="gift";
+    // avoid placing gifts directly over the centered cake area (approx 35% - 65%)
+    let leftPerc;
+    do{ leftPerc = 5 + Math.random()*90; } while(leftPerc>35 && leftPerc<65);
+    g.style.left = leftPerc + "%";
+    // place gifts above cake level (between ~200px and ~340px)
+    g.style.bottom = (200 + Math.random()*140) + "px";
+    g.style.display = "block";
+    // slight random rotation for variety
+    g.style.transform = 'rotate(' + (Math.random()*30 - 15) + 'deg)';
+    document.body.appendChild(g);
+  }
+
+  // Additional gifts near the balloon area (stationary balloons are around bottom:250+)
+  for(let i=0;i<4;i++){
+    const g=document.createElement("div");
+    g.className="gift";
+    g.style.left = (5 + Math.random()*90) + "%";
+    g.style.bottom = (250 + Math.random()*120) + "px";
+    g.style.display = "block";
+    g.style.transform = 'rotate(' + (Math.random()*30 - 15) + 'deg)';
+    document.body.appendChild(g);
+  }
+
+  decorBtn.style.display="none";
+  cakeBtn.style.display="block";
+};
+
+cakeBtn.onclick=()=>{
+  cake.style.display="flex";
+  document.getElementById("table").style.display="block";
+  cakeBtn.style.display="none";
+  blowBtn.style.display="block";
+};
+
+blowBtn.onclick=()=>{
+  blowBtn.style.display="none";
+  msg.style.display="block";
+  msg.innerText="Candles can't be blow because you are too short, so let me blow them for you just act as you are blowing them okayyy!!! 😊";
+  setTimeout(()=>{
+    let count=6;
+    const t=setInterval(()=>{
+      msg.innerText="Lets blow candle in "+count;
+      count--;
+      if(count<0){
+        clearInterval(t);
+        msg.style.display="none";
+        document.querySelectorAll(".flame").forEach(f=>f.style.display="none");
+        cutBtn.style.display="block";
+      }
+    },1000);
+  },10000);
+};
+
+cutBtn.onclick=()=>{
+  // stop any previous audio element playback (we're using WebAudio melody instead)
+  try{ happyAudio.pause(); happyAudio.currentTime = 0; }catch(e){}
+  cake.querySelector(".cake-left").classList.add("slice-left");
+  cake.querySelector(".cake-right").classList.add("slice-right");
+  cutBtn.style.display="none";
+  // After cutting the cake, show a large balloon that floats and then bursts to reveal a message
+  setTimeout(()=>{
+    const big = document.createElement('div');
+    big.className = 'big-balloon';
+    big.innerHTML = '<div style="font-weight:bold;font-size:20px;">🎈 Surprise!</div><div class="knot"></div>';
+    document.body.appendChild(big);
+
+    // Pop the big balloon after it floats for a while
+    setTimeout(()=>{
+      big.classList.add('pop');
+      // start joyful happy-birthday melody when balloon pops
+      try{ if(melodyController){ melodyController.stop(); melodyController = null; } melodyController = startHappyMelody(); }catch(e){}
+      // create the message shown when balloon bursts
+      const text = "HAPPY BIRTHDAY bhindiiii!! halaki mujhe pata nahi ki tu ab bhindi hai ya lauki par bolunga toh bhindi hi , ab kuch aur toh kar nahi sakta tha toh yeh hi bana diya maine tere liye , online mein toh aise hi gift mill skte hain ab tujhe , i know tujhe apna birthday vgera utna accha nahi lagta but still koi baat nahi mujhe lagta hai , aur bs tu khush rehna vahan par hmehsa , aur bs ab toh bade ho hi gayi tu bhi scooling ka bhi last year hai toh bs enjoy kar apne dosto ke saath aur khush reh";
+      // wait for pop animation to complete
+      setTimeout(()=>{
+        big.remove();
+        const bm = document.createElement('div');
+        bm.className = 'big-message';
+        // build message content safely (avoid HTML injection issues)
+        const txt = document.createElement('div');
+        txt.className = 'big-message-text';
+        txt.innerText = text;
+        const wrap = document.createElement('div');
+        wrap.style.textAlign = 'center';
+        const btn = document.createElement('button');
+        btn.className = 'close-btn';
+        btn.type = 'button';
+        btn.innerText = 'CLOSE THE MESSAGE';
+        btn.onclick = ()=> { bm.remove(); try{ melodyController && melodyController.stop(); melodyController = null; }catch(e){} };
+        wrap.appendChild(btn);
+        bm.appendChild(txt);
+        bm.appendChild(wrap);
+        document.body.appendChild(bm);
+        btn.focus();
+      }, 700);
+    }, 3000);
+  }, 1200);
+};
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
