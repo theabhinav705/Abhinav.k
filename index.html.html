@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bhindi's Birthday</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    background: linear-gradient(135deg, #fff1cc, #ffe0b2, #ffd6e8, #fff7ae);
+    background-size:400% 400%;
+    animation:bgMove 15s ease infinite;
+}
+
+@keyframes bgMove{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* 🎉 CENTER TEXT */
+.title{
+    position:absolute;
+    top: 40%;
+    width:100%;
+    text-align:center;
+    font-size:clamp(1.8rem,5vw,3rem);
+    font-weight:800;
+    color:#07a50a;
+    text-shadow:0 0 10px rgba(255,255,255,0.8);
+    z-index:5;
+    animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-10px)}
+}
+
+/* 🚪 ENTER BUTTON */
+.enter-btn{
+    position:absolute;
+    top: 50%;
+    left:50%;
+    transform:translateX(-50%);
+    padding:30px 50px;
+    font-size:1.5rem;
+    font-weight:bold;
+    border:none;
+    border-radius:40px;
+    background:linear-gradient(135deg,#ffd166,#ffb703);
+    color:#5a3b00;
+    cursor:pointer;
+    box-shadow:0 0 20px rgba(255,209,102,0.9);
+    animation:pulse 1.5s infinite;
+    z-index:5;
+}
+
+@keyframes pulse{
+    0%{transform:translateX(-50%) scale(1)}
+    50%{transform:translateX(-50%) scale(1.1)}
+    100%{transform:translateX(-50%) scale(1)}
+}
+
+.enter-btn:hover{
+    background:linear-gradient(135deg,#ffb703,#ffd166);
+}
+
+/* 🎈 BALLOONS */
+.balloon{
+    position:absolute;
+    width:42px;
+    height:58px;
+    border-radius:50%;
+    animation:float 9s infinite ease-in;
+    z-index:2;
+}
+
+.balloon::after{
+    content:'';
+    position:absolute;
+    width:2px;
+    height:32px;
+    background:#fff;
+    top:58px;
+    left:50%;
+}
+
+@keyframes float{
+    from{transform:translateY(120vh)}
+    to{transform:translateY(-150vh)}
+}
+
+/* 🏮 LANTERNS */
+.lantern{
+    position:absolute;
+    top:35px;
+    width:30px;
+    height:45px;
+    background:#ffd54f;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(255,213,79,0.9);
+    animation:swing 3s ease-in-out infinite;
+    z-index:4;
+}
+
+.lantern::before{
+    content:'';
+    position:absolute;
+    width:2px;
+    height:20px;
+    background:#aaa;
+    top:-20px;
+    left:50%;
+}
+
+@keyframes swing{
+    0%{transform:rotate(-4deg)}
+    50%{transform:rotate(4deg)}
+    100%{transform:rotate(-4deg)}
+}
+
+/* 🎆 FIRECRACKERS */
+.cracker{
+    position:absolute;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:gold;
+    box-shadow:0 0 10px gold;
+    animation:fly 2s linear infinite;
+    z-index:1;
+}
+
+@keyframes fly{
+    from{transform:translate(-10vw,100vh);opacity:1;}
+    to{transform:translate(110vw,-20vh);opacity:0;}
+}
+
+/* ✨ CONFETTI */
+.confetti{
+    position:absolute;
+    width:7px;
+    height:7px;
+    animation:fall 6s linear infinite;
+}
+
+@keyframes fall{
+    from{transform:translateY(-10vh) rotate(0deg)}
+    to{transform:translateY(110vh) rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎉 TITLE -->
+<div class="title">HEY ITS BHINDI'S BIRTHDAYYYY!!!!!!!</div>
+
+<!-- 🚪 ENTER BUTTON -->
+<button class="enter-btn" onclick="window.location.href='iindex.html'">
+    ENTER 🎂
+</button>
+
+<!-- 🏮 LANTERNS -->
+<div class="lantern" style="left:10%"></div>
+<div class="lantern" style="left:25%; animation-delay:1s"></div>
+<div class="lantern" style="left:40%; animation-delay:2s"></div>
+<div class="lantern" style="left:55%; animation-delay:1.5s"></div>
+<div class="lantern" style="left:70%; animation-delay:2.5s"></div>
+<div class="lantern" style="left:85%; animation-delay:1s"></div>
+
+<!-- 🎈 BALLOONS -->
+<div class="balloon" style="left:5%; background:#ffb6b9;"></div>
+<div class="balloon" style="left:15%; background:#fae3d9; animation-delay:1s;"></div>
+<div class="balloon" style="left:25%; background:#bbded6; animation-delay:2s;"></div>
+<div class="balloon" style="left:35%; background:#cdb4db; animation-delay:3s;"></div>
+<div class="balloon" style="left:45%; background:#ffc8dd; animation-delay:4s;"></div>
+<div class="balloon" style="left:55%; background:#fff1a8; animation-delay:1.5s;"></div>
+<div class="balloon" style="left:65%; background:#ffd6a5; animation-delay:2.5s;"></div>
+<div class="balloon" style="left:75%; background:#a0c4ff; animation-delay:3.5s;"></div>
+<div class="balloon" style="left:85%; background:#bdb2ff; animation-delay:2s;"></div>
+<div class="balloon" style="left:95%; background:#ffd166; animation-delay:4s;"></div>
+
+<script>
+/* 🎆 MANY FIRECRACKERS */
+for(let i=0;i<280;i++){
+    const c=document.createElement("div");
+    c.className="cracker";
+    c.style.left=Math.random()*100+"vw";
+    c.style.animationDelay=Math.random()*2+"s";
+    c.style.animationDuration=(1.4+Math.random()*1.6)+"s";
+    document.body.appendChild(c);
+}
+
+/* ✨ CONFETTI */
+for(let i=0;i<160;i++){
+    const f=document.createElement("div");
+    f.className="confetti";
+    f.style.left=Math.random()*100+"vw";
+    f.style.background=`hsl(${Math.random()*360},70%,80%)`;
+    f.style.animationDelay=Math.random()*6+"s";
+    document.body.appendChild(f);
+}
+</script>
+
+</body>
+</html>
+
